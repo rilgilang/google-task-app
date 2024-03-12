@@ -1,4 +1,4 @@
-# Task App (task)
+# Google Task App
 
 Google Task App for Mac
 
