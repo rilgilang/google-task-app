@@ -26,6 +26,9 @@ export const useTaskListStore = defineStore("taskList", {
         .get("https://tasks.googleapis.com/tasks/v1/users/@me/lists", config)
         .then((res) => {
           const items = res.data.items;
+          items.map((x) => {
+            x.vmodel = false;
+          });
           this.taskList = items;
         })
         .catch((err) => {

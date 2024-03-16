@@ -3,17 +3,18 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { useUserStore } from "./user";
-import { useTaskListStore } from "./taskList";
 const user = useUserStore();
-const taskList = useTaskListStore();
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
-    task: {
-      title: "",
-      needAction: [],
-      completed: [],
-    },
+    tasks: [
+      // {
+      // id: "",
+      //   title: "",
+      //   needAction: [],
+      //   completed: [],
+      // },
+    ],
   }),
 
   actions: {
@@ -25,7 +26,8 @@ export const useTaskStore = defineStore("task", {
       };
     },
     async fetchTasks(taskListId) {
-      this.task = {
+      const tasks = {
+        id: "",
         title: "",
         needAction: [],
         completed: [],
@@ -44,7 +46,8 @@ export const useTaskStore = defineStore("task", {
         )
         .then((res) => {
           const title = res.data.title;
-          this.task.title = title;
+          tasks.title = title;
+          tasks.id = taskListId;
           return title;
         })
         .catch((err) => {
@@ -60,20 +63,30 @@ export const useTaskStore = defineStore("task", {
           const items = res.data.items;
 
           items.map((x) => {
-            const tl = taskList.getTaskList();
             if (x.status === "needsAction") {
-              this.task.needAction.push(x);
+              tasks.needAction.push(x);
             }
             if (x.status === "completed") {
-              this.task.completed.push(x);
+              tasks.completed.push(x);
             }
           });
+
+          this.tasks.push(tasks);
 
           return items;
         })
         .catch((err) => {
           return err;
         });
+    },
+
+    removeTasksList(taskListId) {
+      console.log("masok ke function wir");
+      this.tasks.map((x, i) => {
+        if (x.id === taskListId) {
+          this.tasks.splice(i, 1);
+        }
+      });
     },
   },
 });
