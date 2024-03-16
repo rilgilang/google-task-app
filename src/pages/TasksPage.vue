@@ -1,20 +1,25 @@
 <template>
   <div class="q-pa-md">
     <q-scroll-area style="height: 50px; max-width: 100%">
-      <q-btn icon="add" color="" class="text-black q-mx-sm text-weight-light" />
-      <q-btn-group class="">
-        <q-btn
-          v-for="tl in taskList"
-          :key="tl.id"
-          color=""
-          :label="tl.title"
-          class="text-black q-px-md text-weight-light"
-          @click="changeTaskList(tl.id)"
-        />
-      </q-btn-group>
+      <q-btn
+        rounded
+        icon="add"
+        color=""
+        class="text-black q-mx-sm text-weight-light"
+      />
+      <q-btn
+        flat
+        rounded
+        v-for="tl in taskList"
+        :key="tl.id"
+        color=""
+        :label="tl.title"
+        class="text-black q-px-md text-weight-light q-mr-sm"
+        @click="changeTaskList(tl.id)"
+      />
     </q-scroll-area>
 
-    <q-card>
+    <q-card style="border-radius: 25px">
       <q-card-section
         v-if="task.completed.length == 0 && task.needAction.length == 0"
         class="text-center"
@@ -27,50 +32,51 @@
       <q-card-section
         v-if="task.completed.length != 0 || task.needAction.length != 0"
       >
-        <div class="text-h4 q-ml-md">{{ task.title }}</div>
+        <div class="text-h5 q-ml-md text-weight-light">{{ task.title }}</div>
         <q-card-section class="fit row">
           <div class="col-12" v-for="t in task.needAction" :key="t.id">
             <div class="fit row items-start">
-              <q-btn size="5px" round outline class="q-mr-sm q-mt-sm"> </q-btn>
+              <q-btn size="6px" round outline class="q-mr-sm q-mt-xs"> </q-btn>
               <div
-                class="col-11 text-h6 text-weight-light text-h6 text-weight-light"
+                class="col-11 text-body1 text-weight-light text-weight-light"
               >
                 {{ t.title }}
               </div>
               <div
-                class="col-1 text-body1 rounded-borders bg-primary text-weight-light text-weight-light q-ml-lg text-center"
+                class="col-1 text-overline rounded-borders bg-accent text-weight-light text-weight-light q-ml-lg text-center"
                 v-if="t.due != null"
               >
                 {{ calculateDay(t) }}
               </div>
             </div>
           </div>
-
           <div class="col-12" v-for="t in task.completed" :key="t.id">
-            <div class="fit row">
-              <q-btn size="5px" round flat class="q-mr-sm">
+            <div class="fit row items-start">
+              <q-btn size="6px" round flat class="q-mr-sm q-mt-xs">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke="#4284f3"
                   class="w-4 h-4"
                 >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M4.5 12.75l6 6 9-13.5"
+                    d="M4.2 15.75l6 5 10-13.5"
                   />
                 </svg>
               </q-btn>
               <div
-                class="col-11 text-h6 text-weight-light text-h6 text-weight-light text-strike"
+                class="col-11 text-body1 text-weight-light text-weight-light"
               >
                 {{ t.title }}
               </div>
               <div
-                class="col-1 text-body1 rounded-borders bg-primary text-weight-light text-weight-light q-ml-lg text-center"
+                class="col-1 text-overline text-weight-light text-weight-light q-ml-lg text-center"
+                style="border: 1.5px solid #d0e0f3; border-radius: 200px"
+                v-if="t.due != null"
               >
                 {{ calculateDay(t) }}
               </div>

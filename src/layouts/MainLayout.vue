@@ -1,12 +1,16 @@
 <template>
   <q-layout view="hHh lpr lFr">
-    <q-header elevated class="bg-accent text-white q-pa-sm" height-hint="98">
+    <q-header elevated class="bg-primary text-white q-pa-sm" height-hint="98">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          App icikiwir
+          <div class="row fit">
+            <q-avatar class="q-mr-md">
+              <img
+                src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg"
+              />
+            </q-avatar>
+            <div>App Icikiwir</div>
+          </div>
         </q-toolbar-title>
       </q-toolbar>
 
