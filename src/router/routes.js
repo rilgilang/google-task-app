@@ -6,9 +6,9 @@ const routes = [
       requiresAuth: true, // Add meta field to indicate protected route
     },
     children: [
-      { path: "", component: () => import("src/pages/IndexPage.vue") },
-      { path: "/task", component: () => import("src/pages/TaskPage.vue") },
-      // { path: "/task-list", component: () => import("pages/TaskList.vue") },
+      { path: "", component: () => import("src/pages/TasksPage.vue") },
+      // { path: "/task", component: () => import("src/pages/TaskListPage.vue") },
+      { path: "/task/:listId", component: () => import("pages/TasksPage.vue") },
     ],
   },
   {

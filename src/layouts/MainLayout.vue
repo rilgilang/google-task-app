@@ -1,70 +1,24 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh lpr lFr">
+    <q-header elevated class="bg-accent text-white q-pa-sm" height-hint="98">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
-        <!-- <div>Quasar v{{ $q.version }}</div> -->
+        <q-toolbar-title>
+          <q-avatar>
+            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+          </q-avatar>
+          App icikiwir
+        </q-toolbar-title>
       </q-toolbar>
 
-      <div class="q-px-lg q-pt-xl q-mb-md">
-        <div class="text-h3">Google Task</div>
-      </div>
+      <!-- <q-tabs align="left">
+        <q-route-tab
+          v-for="tl in taskList"
+          :key="tl.id"
+          :to="`/task/${tl.id}`"
+          :label="tl.title"
+        />
+      </q-tabs> -->
     </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      :width="200"
-      :breakpoint="600"
-    >
-      <q-scroll-area
-        style="
-          height: calc(100% - 160px);
-          margin-top: 150px;
-          border-right: 1px solid #ddd;
-        "
-      >
-        <q-list padding>
-          <q-item to="/task" clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="task" />
-            </q-item-section>
-
-            <q-item-section> Task </q-item-section>
-          </q-item>
-
-          <q-item to="/help" active clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="list" />
-            </q-item-section>
-
-            <q-item-section> Task List </q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
-
-      <q-img
-        class="absolute-top"
-        src="https://cdn.quasar.dev/img/material.png"
-        style="height: 150px"
-      >
-        <div class="absolute-bottom bg-transparent">
-          <q-avatar size="56px" class="q-mb-sm">
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-          </q-avatar>
-          <div class="text-weight-bold">Razvan Stoenescu</div>
-          <div>@rstoenescu</div>
-        </div>
-      </q-img>
-    </q-drawer>
 
     <q-page-container>
       <router-view />
@@ -73,7 +27,15 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted } from "vue";
+import { useTaskListStore } from "../store/taskList";
+import { useUserStore } from "../store/user";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const taskListState = useTaskListStore();
+const userState = useUserStore();
 
 export default defineComponent({
   name: "MainLayout",
@@ -81,13 +43,22 @@ export default defineComponent({
   components: {},
 
   setup() {
-    const leftDrawerOpen = ref(false);
+    const { userInfo } = storeToRefs(userState);
+
+    onMounted(async () => {
+      const res = await userState.fetchUser();
+
+      if (res.response.status && res.response.status === 401) {
+        //TODO FIX THIS
+        router.push("/");
+      }
+    });
 
     return {
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
+      userInfo,
     };
   },
+
+  methods: {},
 });
 </script>
