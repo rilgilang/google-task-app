@@ -31,7 +31,15 @@
 
               <div class="col-12" v-for="t in tasks.needAction" :key="t.id">
                 <div class="fit row items-start">
-                  <q-btn size="6px" round outline class="q-mr-sm q-mt-xs">
+                  <q-btn
+                    size="6px"
+                    round
+                    outline
+                    class="q-mr-sm q-mt-xs"
+                    @click="
+                      changeTaskStatus(tasks.id, t.id, 'completed', t.status)
+                    "
+                  >
                   </q-btn>
                   <div
                     class="col-11 text-body1 text-weight-light text-weight-light"
@@ -48,7 +56,15 @@
               </div>
               <div class="col-12" v-for="t in tasks.completed" :key="t.id">
                 <div class="fit row items-start">
-                  <q-btn size="6px" round flat class="q-mr-sm q-mt-xs">
+                  <q-btn
+                    size="6px"
+                    round
+                    flat
+                    class="q-mr-sm q-mt-xs"
+                    @click="
+                      changeTaskStatus(tasks.id, t.id, 'needAction', t.status)
+                    "
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -101,6 +117,9 @@ export default {
   methods: {
     async changeTaskList(listId) {
       await taskState.fetchTasks(listId);
+    },
+    async changeTaskStatus(listId, taskId, status, currentStatus) {
+      await taskState.changeTaskStatus(listId, taskId, status, currentStatus);
     },
     calculateDay(t) {
       const day = dayjs(t.due).diff(dayjs(), "day");

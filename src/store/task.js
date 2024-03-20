@@ -79,9 +79,38 @@ export const useTaskStore = defineStore("task", {
           return err;
         });
     },
+    async changeTaskStatus(taskListId, taskId, status, currentStatus) {
+      const token = user.getToken();
+      const config = {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      };
+
+      const body = {
+        status: status,
+        id: taskId,
+      };
+
+      await axios
+        .patch(
+          `https://tasks.googleapis.com/tasks/v1/lists/${taskListId}/tasks/${taskId}`,
+          body,
+          config
+        )
+        .then((res) => {
+          tasks = this.tasks.map((x) => {
+            if (x.id === taskListId) {
+              x.status = status;
+            }
+          });
+        })
+        .catch((err) => {
+          return err;
+        });
+    },
 
     removeTasksList(taskListId) {
-      console.log("masok ke function wir");
       this.tasks.map((x, i) => {
         if (x.id === taskListId) {
           this.tasks.splice(i, 1);
@@ -89,4 +118,5 @@ export const useTaskStore = defineStore("task", {
       });
     },
   },
+  persist: true,
 });

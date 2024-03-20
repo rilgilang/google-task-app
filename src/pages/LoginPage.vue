@@ -59,7 +59,7 @@ export default {
   methods: {
     async login(response) {
       await this.userStore.signIn(response);
-      this.$router.go("/");
+      // this.$router.go("/");
     },
   },
 };

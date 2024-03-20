@@ -26,8 +26,25 @@ export const useTaskListStore = defineStore("taskList", {
         .get("https://tasks.googleapis.com/tasks/v1/users/@me/lists", config)
         .then((res) => {
           const items = res.data.items;
+
+          const taskList = JSON.parse(localStorage.getItem("taskList"));
+          const vModel = {};
+
+          if (taskList) {
+            taskList.taskList.map((item) => {
+              vModel.id = item.id;
+              vModel.value = item.value;
+            });
+          }
+
           items.map((x) => {
             x.vmodel = false;
+
+            if (taskList) {
+              if (x.id == v.id) {
+                x.vmodel = v.value;
+              }
+            }
           });
           this.taskList = items;
         })
@@ -36,4 +53,5 @@ export const useTaskListStore = defineStore("taskList", {
         });
     },
   },
+  persist: true,
 });
