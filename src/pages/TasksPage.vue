@@ -29,35 +29,68 @@
                 </div>
               </q-btn>
 
-              <div class="fit row" v-for="t in list.tasks" :key="t.id">
-                <div class="col-12" v-if="t.status === 'needsAction'">
-                  <div class="fit row items-start">
+              <div class="col-12">
+                <div class="col-12" v-for="t in list.tasks" :key="t.id">
+                  <div
+                    class="fit row no-wrap items-start"
+                    v-if="t.status === 'needsAction'"
+                  >
                     <q-btn
                       size="6px"
                       round
-                      outline
+                      flat
                       class="q-mr-sm q-mt-xs"
                       @click="
                         changeTaskStatus(list.id, t.id, 'completed', t.status)
                       "
                     >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="3"
+                        stroke="#4284f3"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M4.2 15.75l6 5 10-13.5"
+                        />
+                      </svg>
                     </q-btn>
                     <div
                       class="col-11 text-body1 text-weight-light text-weight-light"
                     >
                       {{ t.title }}
+
+                      <q-chip
+                        class="text-overline text-weight-light text-weight-light text-center"
+                        style="
+                          border: 1.5px solid #d0e0f3;
+                          border-radius: 200px;
+                        "
+                        v-if="t.due != null"
+                      >
+                        {{ calculateDay(t) }}
+                      </q-chip>
                     </div>
                     <div
-                      class="col-4 text-overline text-weight-light text-weight-light q-ml-lg text-center"
-                      style="border: 1.5px solid #d0e0f3; border-radius: 200px"
-                      v-if="t.due != null"
+                      class="col-1 text-body1 text-weight-light text-weight-light"
                     >
-                      {{ calculateDay(t) }}
+                      <q-btn size="8px" round flat icon="more_vert"></q-btn>
                     </div>
                   </div>
                 </div>
-                <div class="col-12" v-if="t.status === 'completed'">
-                  <div class="fit row items-start">
+              </div>
+
+              <h1 class="text-bold text-body2">Completed</h1>
+              <div class="fit row">
+                <div class="col-12" v-for="t in list.tasks" :key="t.id">
+                  <div
+                    class="fit row no-wrap items-start"
+                    v-if="t.status === 'completed'"
+                  >
                     <q-btn
                       size="6px"
                       round
@@ -86,13 +119,21 @@
                       class="col-11 text-body1 text-weight-light text-weight-light text-strike"
                     >
                       {{ t.title }}
+                      <q-chip
+                        class="text-overline text-weight-light text-weight-light text-center"
+                        style="
+                          border: 1.5px solid #d0e0f3;
+                          border-radius: 200px;
+                        "
+                        v-if="t.due != null"
+                      >
+                        {{ calculateDay(t) }}
+                      </q-chip>
                     </div>
                     <div
-                      class="col-4 text-overline text-weight-light text-weight-light q-ml-lg text-center"
-                      style="border: 1.5px solid #d0e0f3; border-radius: 200px"
-                      v-if="t.due != null"
+                      class="col-1 text-body1 text-weight-light text-weight-light"
                     >
-                      {{ calculateDay(t) }}
+                      <q-btn size="8px" round flat icon="more_vert"></q-btn>
                     </div>
                   </div>
                 </div>
@@ -125,10 +166,26 @@ export default {
       await taskState.changeTaskStatus(listId, taskId, status, currentStatus);
     },
     calculateDay(t) {
-      const day = dayjs(t.due).diff(dayjs(), "day");
+      const now = dayjs();
+      const due = dayjs(t.due);
+      const day = dayjs(t.due).diff(now, "day");
+
       let result = "";
+
+      if (day > 1) {
+        result = `${due.format("ddd")}, ${due.format("MMM")} ${due.date()}`;
+      }
+
       if (day == 0) {
         result = `Today`;
+
+        if (due.date() > now.date()) {
+          result = `Tomorrow`;
+        }
+
+        if (due.date() < now.date()) {
+          result = `Yesterday`;
+        }
       } else if (day == -1) {
         result = "Yesterday";
       } else if (day < -1 && day > -7) {
