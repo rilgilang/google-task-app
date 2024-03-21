@@ -7,30 +7,28 @@ const user = useUserStore();
 
 export const useTaskStore = defineStore("task", {
   state: () => ({
-    tasks: [
+    allTasks: [
       // {
       // id: "",
       //   title: "",
-      //   needAction: [],
-      //   completed: [],
+      //   task: [],
       // },
     ],
   }),
 
   actions: {
     getTasks() {
-      return {
-        title: this.task.title,
-        completeTasks: this.task.completeTasks,
-        needActionTasks: this.task.needActionTasks,
-      };
+      // return {
+      //   title: this.task.title,
+      //   completeTasks: this.task.completeTasks,
+      //   needActionTasks: this.task.needActionTasks,
+      // };
     },
     async fetchTasks(taskListId) {
-      const tasks = {
+      const list = {
         id: "",
         title: "",
-        needAction: [],
-        completed: [],
+        tasks: [],
       };
 
       const token = user.getToken();
@@ -46,8 +44,9 @@ export const useTaskStore = defineStore("task", {
         )
         .then((res) => {
           const title = res.data.title;
-          tasks.title = title;
-          tasks.id = taskListId;
+          list.title = title;
+          list.id = taskListId;
+
           return title;
         })
         .catch((err) => {
@@ -62,16 +61,9 @@ export const useTaskStore = defineStore("task", {
         .then((res) => {
           const items = res.data.items;
 
-          items.map((x) => {
-            if (x.status === "needsAction") {
-              tasks.needAction.push(x);
-            }
-            if (x.status === "completed") {
-              tasks.completed.push(x);
-            }
-          });
+          list.tasks = items;
 
-          this.tasks.push(tasks);
+          this.allTasks.push(list);
 
           return items;
         })
@@ -92,28 +84,33 @@ export const useTaskStore = defineStore("task", {
         id: taskId,
       };
 
+      this.allTasks.map((x) => {
+        if (x.id === taskListId) {
+          x.tasks.map((y) => {
+            if (y.id === taskId) {
+              y.status = status;
+            }
+          });
+        }
+      });
+
       await axios
         .patch(
           `https://tasks.googleapis.com/tasks/v1/lists/${taskListId}/tasks/${taskId}`,
           body,
           config
         )
-        .then((res) => {
-          tasks = this.tasks.map((x) => {
-            if (x.id === taskListId) {
-              x.status = status;
-            }
-          });
-        })
+        .then((res) => {})
         .catch((err) => {
+          // TODO revert status
           return err;
         });
     },
 
     removeTasksList(taskListId) {
-      this.tasks.map((x, i) => {
+      this.allTasks.map((x, i) => {
         if (x.id === taskListId) {
-          this.tasks.splice(i, 1);
+          this.allTasks.splice(i, 1);
         }
       });
     },

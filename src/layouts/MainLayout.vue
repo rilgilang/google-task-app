@@ -103,7 +103,6 @@ export default defineComponent({
       if (vmodel) {
         await taskState.fetchTasks(listId);
       } else {
-        console.log("kesini wir");
         taskState.removeTasksList(listId);
       }
     },
