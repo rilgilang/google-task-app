@@ -29,8 +29,9 @@ export const useUserStore = defineStore("user", {
           return userInfo;
         })
         .catch((err) => {
-          console.log("error fetch user wir --> ", err);
           localStorage.removeItem("access_token");
+          localStorage.removeItem("taskList");
+          localStorage.removeItem("task");
           return err;
         });
 
